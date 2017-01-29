@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour {
 
 	public float speed;
+	public CircleController circController;
 
 	// Use this for initialization
 	void Start () {
-	
+		InitializeColor ();
 	}
 	
 	// Update is called once per frame
@@ -16,9 +17,14 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetButtonDown("Reset")){
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
-
 		Move ();
 	}
+
+	void InitializeColor(){
+		circController = GetComponent<CircleController> ();
+		circController.SetColor (0);
+	}
+
 
 	void Move(){
 		Vector2 direction = Vector2.zero;

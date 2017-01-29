@@ -6,6 +6,8 @@ public class CircleController : MonoBehaviour {
 
 	public int colorNum;
 	private List<Color> colorList;
+	public int colorNumPriorFrame;
+
 
 	// Use this for initialization
 	void Awake () {
@@ -14,7 +16,7 @@ public class CircleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		colorNumPriorFrame = colorNum;
 	}
 
 	void InitializeColorList(){
@@ -44,8 +46,17 @@ public class CircleController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D collision){
 		GameObject collidedObject = collision.gameObject;
-		if (collidedObject.tag == "circle") {
-			AssignNewColor (collidedObject.GetComponent<CircleController> ().colorNum);
+		if ((collidedObject.tag == "circle") || (collidedObject.tag == "Player")) {
+			AssignNewColor (collidedObject.GetComponent<CircleController> ().colorNumPriorFrame);
+		} else if (collidedObject.tag == "goal") {
+			GoalController goalCont = collidedObject.GetComponent<GoalController> ();
+			if ((goalCont.colorNum == colorNum) && (gameObject.tag != "Player")) {
+				Destroy (gameObject);
+				goalCont.score += 1;
+				Debug.Log ("scored");
+			} else {
+				AssignNewColor (goalCont.colorNum);
+			}
 		}
 	}
 }

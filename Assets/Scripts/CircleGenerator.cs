@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class CircleGenerator : MonoBehaviour {
 
 	public GameObject circlePrefab;
+	public GameObject blueGoal;
+	public GameObject redGoal;
 	public int numInitialCircles;
 	public float minAcceptableDistance;
 	public float leftBoundary;
@@ -34,10 +36,24 @@ public class CircleGenerator : MonoBehaviour {
 				location = GenerateRandomLocation ();
 				isValidated = ValidateLocation (location);
 			}
-			GameObject circle = Instantiate (circlePrefab, new Vector3 (location.x, location.y, 0), Quaternion.identity) as GameObject;
-			circleList.Add (location);
-			circle.GetComponent<CircleController> ().SetColor (ChooseRandomColor());
+			CreateCircle (location);
 		}
+		InitializeGoals ();
+	}
+
+	void InitializeGoals(){
+		GoalController redGoalCont = redGoal.GetComponent<GoalController> ();
+		GoalController blueGoalCont = blueGoal.GetComponent<GoalController> ();
+
+		redGoalCont.SetColor (1);
+		blueGoalCont.SetColor (2);
+	}
+
+	void CreateCircle(Vector2 location){
+		GameObject circle = Instantiate (circlePrefab, new Vector3 (location.x, location.y, 0), Quaternion.identity) as GameObject;
+		circleList.Add (location);
+		CircleController cirCont = circle.GetComponent<CircleController> ();
+		cirCont.SetColor (ChooseRandomColor());
 	}
 
 	bool IsTooClose(Vector2 circleA, Vector2 circleB){
@@ -64,6 +80,10 @@ public class CircleGenerator : MonoBehaviour {
 				}
 			}
 		}
+		if ((Vector2.Distance (location, new Vector2 (redGoal.transform.position.x, redGoal.transform.position.y)) < minAcceptableDistance + 3) ||
+			(Vector2.Distance (location, new Vector2 (blueGoal.transform.position.x, blueGoal.transform.position.y)) < minAcceptableDistance + 3)) {
+			isValidated = false;
+		} 
 		return isValidated;
 	}
 

@@ -5,8 +5,11 @@ using System.Collections.Generic;
 public class CircleGenerator : MonoBehaviour {
 
 	public GameObject circlePrefab;
-	public GameObject blueGoal;
-	public GameObject redGoal;
+	public GameObject blueGoal1;
+	public GameObject blueGoal2;
+	public GameObject redGoal1;
+	public GameObject redGoal2;
+	public GameObject player;
 	public int numInitialCircles;
 	public float minAcceptableDistance;
 	public float leftBoundary;
@@ -14,7 +17,7 @@ public class CircleGenerator : MonoBehaviour {
 	public float topBoundary;
 	public float bottomBoundary;
 
-	private List<Vector2> circleList;
+	private List<GameObject> circleList;
 
 	// Use this for initialization
 	void Start () {
@@ -27,41 +30,46 @@ public class CircleGenerator : MonoBehaviour {
 	}
 
 	void GenerateInitialSetup() {
-		circleList = new List<Vector2> ();
-		circleList.Add (Vector2.zero);
+		circleList = new List<GameObject> ();
+		circleList.Add (player);
+		InitializeGoals ();
+
 		for (int i = 0; i < numInitialCircles; i++) {
 			Vector2 location = GenerateRandomLocation ();
-			bool isValidated = ValidateLocation (location);
+			GameObject circle = Instantiate (circlePrefab, new Vector3 (location.x, location.y, 0), Quaternion.identity) as GameObject;
+			bool isValidated = ValidateLocation (circle);
 			while (!isValidated) {
+				Destroy (circle);
 				location = GenerateRandomLocation ();
-				isValidated = ValidateLocation (location);
+				circle = Instantiate (circlePrefab, new Vector3 (location.x, location.y, 0), Quaternion.identity) as GameObject;
+				isValidated = ValidateLocation (circle);
 			}
-			CreateCircle (location);
+			CreateCircle (circle);
 		}
-		InitializeGoals ();
 	}
 
 	void InitializeGoals(){
-		GoalController redGoalCont = redGoal.GetComponent<GoalController> ();
-		GoalController blueGoalCont = blueGoal.GetComponent<GoalController> ();
+		GoalController redGoal1Cont = redGoal1.GetComponent<GoalController> ();
+		GoalController blueGoal1Cont = blueGoal1.GetComponent<GoalController> ();
+		GoalController redGoal2Cont = redGoal2.GetComponent<GoalController> ();
+		GoalController blueGoal2Cont = blueGoal2.GetComponent<GoalController> ();
 
-		redGoalCont.SetColor (1);
-		blueGoalCont.SetColor (2);
+		redGoal1Cont.SetColor (1);
+		blueGoal1Cont.SetColor (2);
+		redGoal2Cont.SetColor (1);
+		blueGoal2Cont.SetColor (2);
+
+		circleList.Add (redGoal1);
+		circleList.Add (redGoal2);
+		circleList.Add (blueGoal1);
+		circleList.Add (blueGoal2);
+
 	}
 
-	void CreateCircle(Vector2 location){
-		GameObject circle = Instantiate (circlePrefab, new Vector3 (location.x, location.y, 0), Quaternion.identity) as GameObject;
-		circleList.Add (location);
+	void CreateCircle(GameObject circle){
+		circleList.Add (circle);
 		CircleController cirCont = circle.GetComponent<CircleController> ();
 		cirCont.SetColor (ChooseRandomColor());
-	}
-
-	bool IsTooClose(Vector2 circleA, Vector2 circleB){
-		if (Vector2.Distance (circleA, circleB) < minAcceptableDistance) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	Vector2 GenerateRandomLocation(){
@@ -70,22 +78,25 @@ public class CircleGenerator : MonoBehaviour {
 		return new Vector2 (x, y);
 	}
 
-	bool ValidateLocation(Vector2 location){
+	bool ValidateLocation(GameObject circle){
 		bool isValidated = true;
+		CircleCollider2D circleCollider = circle.GetComponent<CircleCollider2D> ();
 		if (circleList.Count > 0) {
-			foreach (Vector2 circ in circleList) {
-				if (IsTooClose (location, circ)) {
+			foreach (GameObject circ in circleList) {
+				float minDist = minAcceptableDistance;
+				if (circ.tag == "goal") {
+					minDist += 3;
+				}
+				if (Vector3.Distance(circle.transform.position, circ.transform.position) < minDist) {
 					isValidated = false;
 					break;
 				}
 			}
 		}
-		if ((Vector2.Distance (location, new Vector2 (redGoal.transform.position.x, redGoal.transform.position.y)) < minAcceptableDistance + 3) ||
-			(Vector2.Distance (location, new Vector2 (blueGoal.transform.position.x, blueGoal.transform.position.y)) < minAcceptableDistance + 3)) {
-			isValidated = false;
-		} 
 		return isValidated;
 	}
+
+
 
 	int ChooseRandomColor(){
 		int colorIndex = Random.Range (1, 3);

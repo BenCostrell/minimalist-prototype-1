@@ -4,12 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
-	public float speed;
+	public float moveForce;
+	public float maxSpeed;
 	public CircleController circController;
+
+	private Rigidbody2D rb;
 
 	// Use this for initialization
 	void Start () {
 		InitializeColor ();
+		rb = GetComponent<Rigidbody2D> ();
 	}
 	
 	// Update is called once per frame
@@ -17,6 +21,9 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetButtonDown("Reset")){
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
+	}
+
+	void FixedUpdate(){
 		Move ();
 	}
 
@@ -27,19 +34,14 @@ public class PlayerController : MonoBehaviour {
 
 
 	void Move(){
-		Vector2 direction = Vector2.zero;
-		if (Input.GetAxis("Horizontal") > 0){
-			direction += Vector2.right;
+		Vector2 direction = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
+
+		direction = direction.normalized;
+
+		if (Vector2.Dot(rb.velocity, direction) < maxSpeed) {
+			rb.AddForce (moveForce * direction);
+		} else {
+			rb.velocity = maxSpeed * direction;
 		}
-		if (Input.GetAxis ("Horizontal") < 0){
-			direction += Vector2.left;
-		}
-		if (Input.GetAxis("Vertical") > 0){
-			direction += Vector2.up;
-		}
-		if (Input.GetAxis ("Vertical") < 0){
-			direction += Vector2.down;
-		}
-		GetComponent<Rigidbody2D> ().velocity = speed * direction.normalized;
 	}
 }

@@ -18,7 +18,9 @@ public class ScoreManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			GameWin (1);
+		}
 	}
 
 	public void Score(int colorNum){
@@ -41,6 +43,19 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	void GameWin(int playerNum){
+		if (playerNum == 1) {
+			redGoal1.GetComponent<SpriteRenderer> ().sortingOrder = 3;
+			redGoal2.GetComponent<SpriteRenderer> ().sortingOrder = 3;
 
+			redGoal1.GetComponent<GoalController> ().WinPulse (2);
+			redGoal2.GetComponent<GoalController> ().WinPulse (2);
+		}
+		else if (playerNum == 2) {
+			blueGoal1.GetComponent<SpriteRenderer> ().sortingOrder = 3;
+			blueGoal2.GetComponent<SpriteRenderer> ().sortingOrder = 3;
+
+			blueGoal1.GetComponent<GoalController> ().WinPulse (2);
+			blueGoal2.GetComponent<GoalController> ().WinPulse (2);
+		}
 	}
 }

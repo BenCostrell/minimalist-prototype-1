@@ -22,6 +22,11 @@ public class CircleGenerator : MonoBehaviour {
 	private GameObject player1;
 	private GameObject player2;
 
+	public float winPulseMagnitude;
+	public float winPulseDuration;
+	public float finalWinScale;
+	public float finalWinDuration;
+
 	// Use this for initialization
 	void Start () {
 		GenerateInitialSetup ();
@@ -78,6 +83,16 @@ public class CircleGenerator : MonoBehaviour {
 		circleList.Add (redGoal2);
 		circleList.Add (blueGoal1);
 		circleList.Add (blueGoal2);
+
+		foreach (GameObject go in circleList) {
+			if (go.tag == "goal") {
+				GoalController goalCont = go.GetComponent<GoalController> ();
+				goalCont.winPulseMagnitude = winPulseMagnitude;
+				goalCont.winPulseDuration = winPulseDuration;
+				goalCont.finalWinScale = finalWinScale;
+				goalCont.finalWinDuration = finalWinDuration;
+			}
+		}
 
 	}
 

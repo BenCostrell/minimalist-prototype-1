@@ -9,6 +9,10 @@ public class GoalController : MonoBehaviour {
 	public int score;
 	private GameObject tracker;
 	private SpriteRenderer trackerRenderer;
+	public float winPulseMagnitude;
+	public float winPulseDuration;
+	public float finalWinScale;
+	public float finalWinDuration;
 
 	// Use this for initialization
 	void Awake () {
@@ -45,5 +49,22 @@ public class GoalController : MonoBehaviour {
 
 	public void Score(){
 		tracker.transform.localScale += 0.09f * Vector3.one;
+	}
+
+	public void WinPulse(int pulses){
+		if (pulses > 0) {
+			float pulseStrength = 4 + (winPulseMagnitude / pulses);
+			Debug.Log ("pulse");
+			iTween.PunchScale (gameObject, iTween.Hash ("amount", pulseStrength * Vector3.one, "time", winPulseDuration, 
+				"oncomplete", "WinPulse", "oncompleteparams", pulses - 1));
+		} else {
+			FinalWinTween ();
+		}
+	}
+
+	void FinalWinTween(){
+		GetComponent<CircleCollider2D> ().enabled = false;
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", finalWinScale, "time", finalWinDuration));
+		Debug.Log ("final win");
 	}
 }

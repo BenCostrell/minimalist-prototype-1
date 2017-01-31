@@ -64,6 +64,10 @@ public class CircleGenerator : MonoBehaviour {
 		player1.GetComponent<PlayerController> ().playerNum = 1;
 		player2.GetComponent<PlayerController> ().playerNum = 2;
 
+		player1.GetComponent<PlayerController> ().isActive = true;
+		player2.GetComponent<PlayerController> ().isActive = true;
+
+
 		circleList.Add (player1);
 		circleList.Add (player2);
 	}

@@ -13,6 +13,8 @@ public class GoalController : MonoBehaviour {
 	public float winPulseDuration;
 	public float finalWinScale;
 	public float finalWinDuration;
+	private ScoreManager scoreManager;
+	private CircleGenerator circleGenerator;
 
 	// Use this for initialization
 	void Awake () {
@@ -26,6 +28,8 @@ public class GoalController : MonoBehaviour {
 				child.localScale = Vector3.zero;
 			}
 		}
+		scoreManager = GameObject.FindGameObjectWithTag ("ScoreManager").GetComponent<ScoreManager> ();
+		circleGenerator = GameObject.FindGameObjectWithTag ("CircleGenerator").GetComponent<CircleGenerator> ();
 	}
 	
 	// Update is called once per frame
@@ -54,17 +58,31 @@ public class GoalController : MonoBehaviour {
 	public void WinPulse(int pulses){
 		if (pulses > 0) {
 			float pulseStrength = 4 + (winPulseMagnitude / pulses);
-			Debug.Log ("pulse");
-			iTween.PunchScale (gameObject, iTween.Hash ("amount", pulseStrength * Vector3.one, "time", winPulseDuration, 
-				"oncomplete", "WinPulse", "oncompleteparams", pulses - 1));
+			iTween.ScaleTo (gameObject, iTween.Hash ("scale", pulseStrength * Vector3.one, "time", winPulseDuration, 
+				"easetype", iTween.EaseType.easeOutBounce, "oncomplete", "WinPulse", "oncompleteparams", pulses - 1));
 		} else {
 			FinalWinTween ();
 		}
 	}
 
 	void FinalWinTween(){
-		GetComponent<CircleCollider2D> ().enabled = false;
-		iTween.ScaleTo (gameObject, iTween.Hash ("scale", finalWinScale, "time", finalWinDuration));
-		Debug.Log ("final win");
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", finalWinScale * Vector3.one, "time", finalWinDuration, "oncomplete", "FinalWinScreen"));
+	}
+
+	void FinalWinScreen(){
+		if (!scoreManager.finalScreenShown) {
+			scoreManager.finalScreenShown = true;
+			GameObject winScreen = Instantiate (circleGenerator.playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			winScreen.transform.localScale = 5 * Vector3.one;
+			SpriteRenderer[] renderers = winScreen.GetComponentsInChildren<SpriteRenderer> ();
+			foreach (SpriteRenderer ren in renderers) {
+				ren.sortingOrder += 5;
+				if (ren.gameObject.tag == "Indicator") {
+					ren.color = colorList [colorNum];
+				}
+			}
+			winScreen.GetComponent<CircleCollider2D> ().enabled = false;
+			winScreen.GetComponent<PlayerController> ().isActive = false;
+		}
 	}
 }

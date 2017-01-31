@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour {
 
 	private Rigidbody2D rb;
 
+	public bool isActive;
+
 	// Use this for initialization
 	void Start () {
 		InitializeColor ();
@@ -25,7 +27,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		Move ();
+		if (isActive) {
+			Move ();
+		}
 	}
 
 	public void InitializeColor(){

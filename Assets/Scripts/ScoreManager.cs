@@ -11,14 +11,19 @@ public class ScoreManager : MonoBehaviour {
 	public GameObject blueGoal1;
 	public GameObject blueGoal2;
 
+	private bool gameWon;
+	public bool finalScreenShown;
+
 	// Use this for initialization
 	void Start () {
-	
+		gameWon = false;
+		finalScreenShown = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Space)) {
+			gameWon = true;
 			GameWin (1);
 		}
 	}
@@ -28,7 +33,8 @@ public class ScoreManager : MonoBehaviour {
 			redScore += 1;
 			redGoal1.GetComponent<GoalController> ().Score ();
 			redGoal2.GetComponent<GoalController> ().Score ();
-			if (redScore >= 10) {
+			if ((redScore >= 10) && !gameWon) {
+				gameWon = true;
 				GameWin (1);
 			}
 		}
@@ -36,7 +42,8 @@ public class ScoreManager : MonoBehaviour {
 			blueScore += 1;
 			blueGoal1.GetComponent<GoalController> ().Score ();
 			blueGoal2.GetComponent<GoalController> ().Score ();
-			if (blueScore >= 10) {
+			if ((blueScore >= 10) && !gameWon) {
+				gameWon = true;
 				GameWin (2);
 			}
 		}
@@ -44,18 +51,18 @@ public class ScoreManager : MonoBehaviour {
 
 	void GameWin(int playerNum){
 		if (playerNum == 1) {
-			redGoal1.GetComponent<SpriteRenderer> ().sortingOrder = 3;
-			redGoal2.GetComponent<SpriteRenderer> ().sortingOrder = 3;
-
-			redGoal1.GetComponent<GoalController> ().WinPulse (2);
-			redGoal2.GetComponent<GoalController> ().WinPulse (2);
+			InitiateWinPulse (redGoal1);
+			InitiateWinPulse (redGoal2);
 		}
 		else if (playerNum == 2) {
-			blueGoal1.GetComponent<SpriteRenderer> ().sortingOrder = 3;
-			blueGoal2.GetComponent<SpriteRenderer> ().sortingOrder = 3;
-
-			blueGoal1.GetComponent<GoalController> ().WinPulse (2);
-			blueGoal2.GetComponent<GoalController> ().WinPulse (2);
+			InitiateWinPulse (blueGoal1);
+			InitiateWinPulse (blueGoal2);
 		}
+	}
+
+	void InitiateWinPulse(GameObject goal){
+		goal.GetComponent<SpriteRenderer> ().sortingOrder = 3;
+		goal.GetComponent<CircleCollider2D> ().enabled = false;
+		goal.GetComponent<GoalController> ().WinPulse (2);
 	}
 }

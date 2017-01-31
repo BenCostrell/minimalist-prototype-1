@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public float moveForce;
 	public float maxSpeed;
 	public CircleController circController;
+	public int playerNum;
 
 	private Rigidbody2D rb;
 
@@ -27,14 +28,24 @@ public class PlayerController : MonoBehaviour {
 		Move ();
 	}
 
-	void InitializeColor(){
+	public void InitializeColor(){
 		circController = GetComponent<CircleController> ();
 		circController.SetColor (0);
+		Transform[] children = GetComponentsInChildren<Transform> ();
+		foreach (Transform child in children) {
+			if (child.tag == "Indicator") {
+				if (playerNum == 1) {
+					child.GetComponent<SpriteRenderer> ().color = Color.red;
+				} else if (playerNum == 2) {
+					child.GetComponent<SpriteRenderer> ().color = Color.blue;
+				}
+			}
+		}
 	}
 
 
 	void Move(){
-		Vector2 direction = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
+		Vector2 direction = new Vector2 (Input.GetAxisRaw ("Horizontal_P" + playerNum), Input.GetAxisRaw ("Vertical_P" + playerNum));
 
 		direction = direction.normalized;
 

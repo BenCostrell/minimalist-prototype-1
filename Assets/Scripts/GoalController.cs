@@ -7,11 +7,21 @@ public class GoalController : MonoBehaviour {
 	public int colorNum;
 	public List<Color> colorList;
 	public int score;
+	private GameObject tracker;
+	private SpriteRenderer trackerRenderer;
 
 	// Use this for initialization
 	void Awake () {
 		InitializeColorList ();
 		score = 0;
+		Transform[] children = GetComponentsInChildren<Transform> ();
+		foreach (Transform child in children) {
+			if (child.tag == "Tracker") {
+				tracker = child.gameObject;
+				trackerRenderer = tracker.GetComponent<SpriteRenderer> ();
+				child.localScale = Vector3.zero;
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -21,6 +31,7 @@ public class GoalController : MonoBehaviour {
 
 	public void SetColor(int cNum){
 		GetComponent<SpriteRenderer> ().color = colorList[cNum];
+		trackerRenderer.color = colorList [cNum];
 		colorNum = cNum;
 	}
 
@@ -30,5 +41,9 @@ public class GoalController : MonoBehaviour {
 		colorList.Add (Color.red);
 		colorList.Add (Color.blue);
 		colorList.Add (Color.magenta);
+	}
+
+	public void Score(){
+		tracker.transform.localScale += 0.09f * Vector3.one;
 	}
 }

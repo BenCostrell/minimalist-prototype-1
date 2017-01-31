@@ -7,11 +7,13 @@ public class CircleController : MonoBehaviour {
 	public int colorNum;
 	private List<Color> colorList;
 	public int colorNumPriorFrame;
+	private GameObject scoreManager;
 
 
 	// Use this for initialization
 	void Awake () {
 		InitializeColorList ();
+		scoreManager = GameObject.FindWithTag ("ScoreManager");
 	}
 	
 	// Update is called once per frame
@@ -52,8 +54,7 @@ public class CircleController : MonoBehaviour {
 			GoalController goalCont = collidedObject.GetComponent<GoalController> ();
 			if ((goalCont.colorNum == colorNum) && (gameObject.tag != "Player")) {
 				Destroy (gameObject);
-				goalCont.score += 1;
-				Debug.Log ("scored");
+				scoreManager.GetComponent<ScoreManager> ().Score (goalCont.colorNum);
 			} else {
 				AssignNewColor (goalCont.colorNum);
 			}

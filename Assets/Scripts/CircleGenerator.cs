@@ -9,7 +9,8 @@ public class CircleGenerator : MonoBehaviour {
 	public GameObject blueGoal2;
 	public GameObject redGoal1;
 	public GameObject redGoal2;
-	public GameObject player;
+	public GameObject playerPrefab;
+
 	public int numInitialCircles;
 	public float minAcceptableDistance;
 	public float leftBoundary;
@@ -18,6 +19,8 @@ public class CircleGenerator : MonoBehaviour {
 	public float bottomBoundary;
 
 	private List<GameObject> circleList;
+	private GameObject player1;
+	private GameObject player2;
 
 	// Use this for initialization
 	void Start () {
@@ -31,7 +34,8 @@ public class CircleGenerator : MonoBehaviour {
 
 	void GenerateInitialSetup() {
 		circleList = new List<GameObject> ();
-		circleList.Add (player);
+
+		InitializePlayers ();
 		InitializeGoals ();
 
 		for (int i = 0; i < numInitialCircles; i++) {
@@ -46,6 +50,17 @@ public class CircleGenerator : MonoBehaviour {
 			}
 			CreateCircle (circle);
 		}
+	}
+
+	void InitializePlayers(){
+		player1 = Instantiate (playerPrefab, new Vector3 (-5, 0, 0), Quaternion.identity) as GameObject;
+		player2 = Instantiate (playerPrefab, new Vector3 (5, 0, 0), Quaternion.identity) as GameObject;
+
+		player1.GetComponent<PlayerController> ().playerNum = 1;
+		player2.GetComponent<PlayerController> ().playerNum = 2;
+
+		circleList.Add (player1);
+		circleList.Add (player2);
 	}
 
 	void InitializeGoals(){

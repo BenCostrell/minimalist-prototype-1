@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ScoreManager : MonoBehaviour {
 
@@ -22,10 +23,17 @@ public class ScoreManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		/*if (Input.GetKeyDown (KeyCode.Space)) {
 			gameWon = true;
 			GameWin (1);
+		}*/
+		if (Input.GetButtonDown("Reset")){
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
+		if (Input.GetButtonDown("ToggleFullScreen")){
+			Screen.fullScreen = !Screen.fullScreen;
+		}
+			
 	}
 
 	public void Score(int colorNum){

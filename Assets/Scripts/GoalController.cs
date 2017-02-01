@@ -53,6 +53,9 @@ public class GoalController : MonoBehaviour {
 
 	public void Score(){
 		tracker.transform.localScale += 0.09f * Vector3.one;
+		if (!scoreManager.gameWon) {
+			GetComponent<AudioSource> ().Play ();
+		}
 	}
 
 	public void WinPulse(int pulses){

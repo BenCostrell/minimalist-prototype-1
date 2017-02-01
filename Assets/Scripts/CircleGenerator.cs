@@ -22,6 +22,8 @@ public class CircleGenerator : MonoBehaviour {
 	private GameObject player1;
 	private GameObject player2;
 
+	private List<int> circleColorBag;
+
 	public float winPulseMagnitude;
 	public float winPulseDuration;
 	public float finalWinScale;
@@ -39,6 +41,9 @@ public class CircleGenerator : MonoBehaviour {
 
 	void GenerateInitialSetup() {
 		circleList = new List<GameObject> ();
+		circleColorBag = new List<int> ();
+
+		FillBag ();
 
 		InitializePlayers ();
 		InitializeGoals ();
@@ -54,6 +59,14 @@ public class CircleGenerator : MonoBehaviour {
 				isValidated = ValidateLocation (circle);
 			}
 			CreateCircle (circle);
+		}
+	}
+
+
+	void FillBag(){
+		for (int i = 0; i < 10; i++) {
+			circleColorBag.Add (1);
+			circleColorBag.Add (2);
 		}
 	}
 
@@ -133,8 +146,10 @@ public class CircleGenerator : MonoBehaviour {
 
 
 	int ChooseRandomColor(){
-		int colorIndex = Random.Range (1, 3);
-		return colorIndex;
+		int colorIndex = Random.Range (0, circleColorBag.Count);
+		int colorNum = circleColorBag [colorIndex];
+		circleColorBag.Remove (colorNum);
+		return colorNum;
 	}
 
 }

@@ -47,16 +47,27 @@ public class CircleController : MonoBehaviour {
 
 
 	void OnCollisionEnter2D(Collision2D collision){
-		GameObject collidedObject = collision.gameObject;
-		if ((collidedObject.tag == "circle") || (collidedObject.tag == "Player")) {
-			AssignNewColor (collidedObject.GetComponent<CircleController> ().colorNumPriorFrame);
-		} else if (collidedObject.tag == "goal") {
-			GoalController goalCont = collidedObject.GetComponent<GoalController> ();
-			if ((goalCont.colorNum == colorNum) && (gameObject.tag != "Player")) {
-				Destroy (gameObject);
-				scoreManager.GetComponent<ScoreManager> ().Score (goalCont.colorNum);
-			} else {
-				AssignNewColor (goalCont.colorNum);
+		if (!scoreManager.GetComponent<ScoreManager>().gameWon) {
+			GameObject collidedObject = collision.gameObject;
+			if ((collidedObject.tag == "circle") || (collidedObject.tag == "Player")) {
+				AssignNewColor (collidedObject.GetComponent<CircleController> ().colorNumPriorFrame);
+				if (gameObject.tag == "circle") {
+					if (collidedObject.tag == "circle") {
+						if (!collidedObject.GetComponent<AudioSource> ().isPlaying) {
+							GetComponent<AudioSource> ().Play ();
+						}
+					} else {
+						GetComponent<AudioSource> ().Play ();
+					}
+				}
+			} else if (collidedObject.tag == "goal") {
+				GoalController goalCont = collidedObject.GetComponent<GoalController> ();
+				if ((goalCont.colorNum == colorNum) && (gameObject.tag != "Player")) {
+					Destroy (gameObject);
+					scoreManager.GetComponent<ScoreManager> ().Score (goalCont.colorNum);
+				} else {
+					AssignNewColor (goalCont.colorNum);
+				}
 			}
 		}
 	}

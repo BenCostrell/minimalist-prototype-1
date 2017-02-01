@@ -11,7 +11,7 @@ public class ScoreManager : MonoBehaviour {
 	public GameObject blueGoal1;
 	public GameObject blueGoal2;
 
-	private bool gameWon;
+	public bool gameWon;
 	public bool finalScreenShown;
 
 	// Use this for initialization
@@ -31,25 +31,26 @@ public class ScoreManager : MonoBehaviour {
 	public void Score(int colorNum){
 		if (colorNum == 1) {
 			redScore += 1;
-			redGoal1.GetComponent<GoalController> ().Score ();
-			redGoal2.GetComponent<GoalController> ().Score ();
 			if ((redScore >= 10) && !gameWon) {
 				gameWon = true;
 				GameWin (1);
 			}
+			redGoal1.GetComponent<GoalController> ().Score ();
+			redGoal2.GetComponent<GoalController> ().Score ();
 		}
 		else if (colorNum == 2) {
 			blueScore += 1;
-			blueGoal1.GetComponent<GoalController> ().Score ();
-			blueGoal2.GetComponent<GoalController> ().Score ();
 			if ((blueScore >= 10) && !gameWon) {
 				gameWon = true;
 				GameWin (2);
 			}
+			blueGoal1.GetComponent<GoalController> ().Score ();
+			blueGoal2.GetComponent<GoalController> ().Score ();
 		}
 	}
 
 	void GameWin(int playerNum){
+		GetComponent<AudioSource> ().Play ();
 		if (playerNum == 1) {
 			InitiateWinPulse (redGoal1);
 			InitiateWinPulse (redGoal2);

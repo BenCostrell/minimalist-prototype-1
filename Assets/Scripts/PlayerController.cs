@@ -49,9 +49,9 @@ public class PlayerController : MonoBehaviour {
 
 
 	void Move(){
-		Vector2 direction = new Vector2 (Input.GetAxisRaw ("Horizontal_P" + playerNum), Input.GetAxisRaw ("Vertical_P" + playerNum));
+		Vector2 direction = new Vector2 (Input.GetAxis ("Horizontal_P" + playerNum), Input.GetAxis ("Vertical_P" + playerNum));
 
-		direction = direction.normalized;
+		//direction = direction.normalized;
 
 		if (Vector2.Dot(rb.velocity, direction) < maxSpeed) {
 			rb.AddForce (moveForce * direction);
